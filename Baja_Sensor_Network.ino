@@ -2,9 +2,9 @@
 //*****************************************************************************************************
 //************************                 Software Bombaja BJ14         ******************************
 //************************          Rede de Sensores, Datalogger e RF    ******************************
-//************************             Última modificação: 11/2016       ******************************
+//************************             Última modificação: 20/10         ******************************
 //************************                   Disponível em               ******************************
-//************************              https://github.com/hollweg       ******************************
+//************************              https://github.com/Hollweg       ******************************
 //*****************************************************************************************************
 
 #include <SD.h>
@@ -19,11 +19,11 @@ typedef const short signed int      csint8_t;
 typedef const short unsigned int    csuint8_t;
 typedef short signed int            sint8_t;
 typedef short unsigned int          suint8_t;
+//typedef signed int                  int16_t;
+//typedef unsigned int                uint16_t;
 typedef signed long int             int32_t;
 typedef unsigned long int           uint32_t;
 typedef float                       float32_t;
-//typedef signed int                  int16_t;
-//typedef unsigned int                uint16_t;
 
 void velocidade_cont ();
 void rpm_cont ();
@@ -55,7 +55,7 @@ sint8_t Creation_Archive = 0;
 float32_t Valorlido_Temp = 0;
 float32_t Media_Temperatura = 0;
 float32_t Acumulador_Temperatura = 0;
-sint8_t Contador_Temperatura = 0;        
+sint8_t Contador_Temperatura = 0;
 
 //Variaveis para medicao de sensores de veloc. e rotacao
 suint8_t Media_Rotacao = 0;
@@ -98,9 +98,10 @@ boolean Troca_Tela = HIGH;
 
 //Nivel de Combustivel
 const suint8_t LED_Reabastecimento = 8;
-const suint8_t Sinal_Capacitivo = 9;
+const suint8_t Sinal_Capacitivo = 17;
+boolean Gas = 0; 
 
-//Contador de avisos "cartao com defeito"
+//Variavel cartao SD
 suint8_t Cont_SD = 0;
 
 /***********************************************
@@ -148,8 +149,7 @@ void rpm_cont ()
     if((Current_Millis_Rot - Previous_Millis_Rot >= Interval_Rot))
        {
          Previous_Millis_Rot = Current_Millis_Rot;             
-         //Rpm_Display = Rpm*600;                                  //com sensor indutivo de efeito hall - 2 pulsos por volta
-         Rpm_Display = Rpm*300;                                    //com sensor indutivo comum - 1 pulso por volta   
+         Rpm_Display = Rpm*600;                                       
          Rpm = 0;                                                                    
        }
 }      
@@ -169,12 +169,12 @@ void rpm_cont ()
 void seta_data_hora()          
 {
      byte Segundos = 00;                      //Valores de 0 a 59
-     byte Minutos = 36;                       //Valores de 0 a 59
+     byte Minutos = 40;                       //Valores de 0 a 59
      byte Horas = 15;                         //Valores de 0 a 23
      byte Dia_Semana = 2;                     //Valores de 0 a 6 - 0=Domingo, 1 = Segunda, etc.
-     byte Dia_Mes = 17;                       //Valores de 1 a 31
+     byte Dia_Mes = 15;                       //Valores de 1 a 31
      byte Mes = 11;                           //Valores de 1 a 12
-     byte Ano = 15;                           //Valores de 0 a 99
+     byte Ano = 16;                           //Valores de 0 a 99
      Wire.beginTransmission(DS1307_ADDRESS);
      Wire.write(Zero);                        //Stop no CI para que o mesmo possa receber os dados
     
@@ -360,7 +360,7 @@ void draw_cartao_defeito()
 {
     u8g.setFont(u8g_font_fub17);
     u8g.drawStr( 17, 20, "Cartao com "); 
-    u8g.drawStr( 28, 45, "Problema"); 
+    u8g.drawStr( 28, 45, "Defeito"); 
     u8g.setFont(u8g_font_6x12);
     u8g.drawStr( 5, 60, "Verificar e Reiniciar");
 }
@@ -424,9 +424,15 @@ void draw_atualiza_tela()
           u8g.print(Minutos_SD);
           u8g.setPrintPos(95,20);
           u8g.print(Segundos_SD);
-          u8g.drawStr(0, 60,  "Gas:  0.00  ml");
-          //u8g.setPrintPos(50, 60);
-          //u8g.print(Gas); 
+          if (Gas == 1){
+              u8g.setPrintPos(40, 60);
+              u8g.drawStr(0, 60,  "Tanque: Vazio"); 
+          }
+          
+          else{
+              u8g.setPrintPos(40, 60);
+              u8g.drawStr(0, 60,  "Tanque: Cheio"); 
+         }
          }
  }
  //~~final draw_atualiza_tela
@@ -446,9 +452,12 @@ void draw_atualiza_tela()
 void setup() 
 { 
     attachInterrupt(4, velocidade_cont, FALLING );   // pino 19
-    attachInterrupt(5, rpm_cont, FALLING);           // pino 18
+    attachInterrupt(5, rpm_cont, FALLING);          // pino 18
+
+    pinMode(19, INPUT_PULLUP);
+    pinMode(18, INPUT_PULLUP);
     
-    pinMode(Sinal_Capacitivo, INPUT);               //pino de leitura do sensor capacitivo
+    pinMode(Sinal_Capacitivo, INPUT_PULLUP);        //pino de leitura do sensor capacitivo
     pinMode(LED_Reabastecimento, OUTPUT);           //pino para saida do led indicando reabastecimento
     pinMode(Chip_Select_SD, OUTPUT);                //CS do cartao SD
     
@@ -474,6 +483,7 @@ void setup()
     
     /*Funcao para configuracao e set da hora do RTC 
     Comentar apos utilizada */
+    
     //seta_data_hora(); 
     
 testa_cartao:
@@ -485,8 +495,9 @@ testa_cartao:
            }while(u8g.nextPage());
               
         delay(2000);
-        if (Botao_Tela == HIGH){
-          return;
+        Troca_Tela = digitalRead(Botao_Tela);
+        if (Troca_Tela == HIGH){
+            return; 
         }
         goto testa_cartao;
        }
@@ -496,7 +507,7 @@ testa_cartao:
         u8g.firstPage();  
         do{
               draw_cartao_inserido();
-           }while(u8g.nextPage());
+           }while(u8g.nextPage());      
         delay(2000);
        }
  }
@@ -522,13 +533,11 @@ void loop()
     unsigned long int Current_Millis_Atualiza_Tela = millis();
     unsigned long Current_Millis_Combustivel = millis();
      
-    /*logica da amostra de temperatura - OK!*/
+    //logica da amostra de temperatura - OK!
     Valorlido_Temp = analogRead(A0);
-    Acumulador_Temperatura = Acumulador_Temperatura + (Valorlido_Temp*5/(1023))/0.01;             //Usando sensor LM35   ---- 1º = 10mV --- Valor lido * (5 (V) / 1023 (10bits)) / 10mV 
-    //Acumulador_Temperatura = Acumulador_Temperatura + ((Valorlido_Temp*500.0)/1024);              //Conversão de 10mV/C para Graus Celsius usando termopar do tipo K
-    
-    Contador_Temperatura = Contador_Temperatura + 1;                                              //conta até 10 para fazer a comparacao e efetuar calculo
-                                                                                                  //da media, para eliminar assim possiveis outliers
+    Acumulador_Temperatura = Acumulador_Temperatura + ((Valorlido_Temp*850.0)/1024);   //Conversão de 10mV/C para Graus Celsius
+    Contador_Temperatura = Contador_Temperatura + 1;                                   //conta até 10 para fazer a comparacao e efetuar calculo
+                                                                                       //da media, para eliminar assim possiveis outliers
     if (Contador_Temperatura == 10)                                                     
       {
         Media_Temperatura = (Acumulador_Temperatura / 10);  
@@ -536,25 +545,27 @@ void loop()
         Contador_Temperatura = 0; 
       }   
     
-    /* logica para verificacao do combustivel */
+    //logica para verificacao do combustivel 
     nivel_combustivel = digitalRead(Sinal_Capacitivo);
     if (nivel_combustivel == HIGH)
         {
          digitalWrite (LED_Reabastecimento, LOW);
          Previous_Millis_Nivel_Combustivel = Current_Millis_Combustivel;
+         Gas = 0;
         }
         
     else if ((nivel_combustivel == LOW) && (Current_Millis_Combustivel - Previous_Millis_Nivel_Combustivel >= Interval_Nivel_Combustivel))
         {
           digitalWrite (LED_Reabastecimento, HIGH);
+          Gas = 1;
           Reserva = 1;
         }
 
-    /* Testa a tela selecionada e atualiza o relogio */
+    //Testa a tela selecionada e atualiza o relogio
     int Tela_Loop = digitalRead(Botao_Tela);
     mostra_relogio();
    
-    /* debounce e verificacao da tela a ser mostrada no GLCD - OK!  */ 
+    //debounce e verificacao da tela a ser mostrada no GLCD - OK!   
     if ((Tela_Loop == HIGH) && (Current_Millis_Tela - Previous_Millis_Tela >= Interval_Tela))
      {
          Troca_Tela = !Troca_Tela;                                                      //Seria o estado q esta a memoria para a troca de tela , 0v uma tela , 5v outra tela
@@ -588,14 +599,14 @@ criacao_arquivo_SD:                                                //Verifica a 
             myFile.close();
             } 
       
-         else
+         /*else
            {
             u8g.firstPage();  
             do{
                 draw_cartao_defeito();
                }while(u8g.nextPage()); 
             delay(2000);   
-           }
+           }*/
            
        Creation_Archive = 1;
        } 
@@ -648,8 +659,8 @@ testa_tempo_entre_escrita:
              do{
                  draw_cartao_defeito();
                 }while(u8g.nextPage()); 
-             Cont_SD++;
-             delay(2000);   
+             delay(2000);
+             Cont_SD++;   
             }
          Previous_Millis_SD = Current_Millis_SD;
         }
