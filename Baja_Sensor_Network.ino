@@ -19,8 +19,6 @@ typedef const short signed int      csint8_t;
 typedef const short unsigned int    csuint8_t;
 typedef short signed int            sint8_t;
 typedef short unsigned int          suint8_t;
-//typedef signed int                  int16_t;
-//typedef unsigned int                uint16_t;
 typedef signed long int             int32_t;
 typedef unsigned long int           uint32_t;
 typedef float                       float32_t;
@@ -149,7 +147,7 @@ void rpm_cont ()
     if((Current_Millis_Rot - Previous_Millis_Rot >= Interval_Rot))
        {
          Previous_Millis_Rot = Current_Millis_Rot;             
-         Rpm_Display = Rpm*600;                                       
+         Rpm_Display = Rpm*300;                                       
          Rpm = 0;                                                                    
        }
 }      
