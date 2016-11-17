@@ -1,9 +1,9 @@
 
 //*****************************************************************************************************
-//************************                 Software Bombaja BJ14         ******************************
-//************************          Rede de Sensores, Datalogger e RF    ******************************
-//************************             Última modificação: 20/10         ******************************
-//************************                   Disponível em               ******************************
+//************************                 BJ14 Bombaja Software         ******************************
+//************************          Sensor Network, datalogger and RF    ******************************
+//************************             Last modification on 20/10        ******************************
+//************************                   Available in                ******************************
 //************************              https://github.com/Hollweg       ******************************
 //*****************************************************************************************************
 
@@ -36,26 +36,26 @@ void draw_cartao_nao_inserido();
 void draw_cartao_defeito();
 void draw_atualiza_tela(); 
 
-// Pinos do RTC - Com. I2C - SDA: 20 SCL: 21
+//I2C RTC pins - SDA: 20 SCL: 21
 #define DS1307_ADDRESS 0x68
 
-//Inicialização Display GLCD
-U8GLIB_ST7920_128X64_1X u8g(5, 6, 4);	// modo serial (enable, rw , rs)  
+//GLCD initialization
+U8GLIB_ST7920_128X64_1X u8g(5, 6, 4);	//serial mode (enable, rw, rs)  
 
-//Pino que configura a seleção do Chip Select para protocolo SPI
+//Chip Select SPI configuration pin 
 csint8_t Chip_Select_SD = 49; 
 
-//Definicoes de variaveis para configuracao da criacao de arquivos
+//Variable definitions for archives creation
 File myFile;
 sint8_t Creation_Archive = 0;
 
-//Declaracao da parte de temperatura
+//Temperature variables
 float32_t Valorlido_Temp = 0;
 float32_t Media_Temperatura = 0;
 float32_t Acumulador_Temperatura = 0;
 sint8_t Contador_Temperatura = 0;
 
-//Variaveis para medicao de sensores de veloc. e rotacao
+//Motor Rotation and velocity variables
 suint8_t Media_Rotacao = 0;
 suint8_t Contador_Rotacao = 0;
 
@@ -69,8 +69,8 @@ suint8_t State = LOW;
 suint8_t Teste = 0;
 suint8_t Media_RPM = 0;
 
-/* Delay sem delay para amostragem de ~1 e ~2 segundos de 
-velocidade e gravacao no cartao */
+/* Delay without delay using millis. ~1 and ~2 seconds velocity/rotation and
+SD card saving */
 csuint8_t Interval_Rot = 100;
 csuint8_t Interval = 1000;
 csuint8_t Interval_SD = 5000;
@@ -85,21 +85,21 @@ int32_t Previous_Millis_Tela = 0;
 int32_t Previous_Millis_Atualiza_Tela = 0;
 int32_t Previous_Millis_Nivel_Combustivel = 0; 
 
-//variaveis utilizadas no RTC
+//RTC variables
 byte Zero = 0x00; 
 uint8_t Dia_Completo;
 suint8_t Dia_SD, Mes_SD, Ano_SD, Horas_SD, Minutos_SD, Segundos_SD;
 
-//Troca de tela
-const suint8_t Botao_Tela = 7;           //pino onde sera conectado o botao de troca de tela
+//Screen swap
+const suint8_t Botao_Tela = 7;                //pin where it is connected screen swap button
 boolean Troca_Tela = HIGH;
 
-//Nivel de Combustivel
+//Fuel Level
 const suint8_t LED_Reabastecimento = 8;
 const suint8_t Sinal_Capacitivo = 17;
 boolean Gas = 0; 
 
-//Variavel cartao SD
+//SD card variable
 suint8_t Cont_SD = 0;
 
 /***********************************************
@@ -110,6 +110,9 @@ suint8_t Cont_SD = 0;
  * Out:
  *    --
  * Description:
+ *    Function to measure velocity indutive sensor pulses
+ *    and convert the result to km/h
+ * 
  *    Funcao para contar os pulsos do sensor indutivo
  *    de velocidade e efetuar conversao para km/h
  ************************************************/
@@ -120,11 +123,11 @@ void velocidade_cont ()
     Veloc++;
     if((Current_Millis - Previous_Millis >= Interval))
        { 
-         Previous_Millis = Current_Millis;        //Velocidade em k/h
-         Veloc_Display = Veloc*0.11;              //Aquisicao por segundo
-         Veloc = 0;                               //nº pulsos por revolucao = 17; Roda = 0.53 m
-       }                                          //1 pulso = 0.031m 
-                                                  //Equacao = pulsos * 0.03 * 3.6 = 0.11
+         Previous_Millis = Current_Millis;        //Velocity in km/h        
+         Veloc_Display = Veloc*0.11;              //1 second acquisition    
+         Veloc = 0;                               //pulses per revolution = 17; Wheel = 0.53 m
+       }                                          //1 pulse = 0.031m 
+                                                  //Equation = pulses * 0.03 * 3.6 = 0.11
 }
 //~~ final velocidade_cont
 
@@ -136,8 +139,11 @@ void velocidade_cont ()
  * Out:
  *    --
  * Description:
+ *    Function to measure and convert motor rotation
+ *    to RPM 
+ *
  *    Funcao para contar e efetuar conversao 
- *    de uniddades para rpm dos pulsos do 
+ *    de unidaes para rpm dos pulsos do 
  *    sensor indutivo de rotacao
  ************************************************/
 void rpm_cont ()
@@ -161,23 +167,24 @@ void rpm_cont ()
  * Out:
  *    --
  * Description:
+ *    Function to set timestamp on RTC
+ *
  *    Funcao para setar hora no RTC 
  *    utilizando o CI DS1307
  ************************************************/
 void seta_data_hora()          
 {
-     byte Segundos = 00;                      //Valores de 0 a 59
-     byte Minutos = 40;                       //Valores de 0 a 59
-     byte Horas = 15;                         //Valores de 0 a 23
-     byte Dia_Semana = 2;                     //Valores de 0 a 6 - 0=Domingo, 1 = Segunda, etc.
-     byte Dia_Mes = 15;                       //Valores de 1 a 31
-     byte Mes = 11;                           //Valores de 1 a 12
-     byte Ano = 16;                           //Valores de 0 a 99
+     byte Segundos = 00;                      //Values from 0 to 59
+     byte Minutos = 40;                       //Values from 0 to 59
+     byte Horas = 15;                         //Values from 0 to 23
+     byte Dia_Semana = 2;                     //Values from 0 to 6 - 0 = Sunday, 1 = Monday, etc.
+     byte Dia_Mes = 15;                       //Values from 1 to 31
+     byte Mes = 11;                           //Values from 1 to 12
+     byte Ano = 16;                           //Values from 0 to 99
      Wire.beginTransmission(DS1307_ADDRESS);
-     Wire.write(Zero);                        //Stop no CI para que o mesmo possa receber os dados
+     Wire.write(Zero);                        //Stop DS1307 to receive data
     
-     //As linhas abaixo escrevem no CI os valores de 
-     //data e hora que foram colocados nas variaveis acima
+     //Values conversion and transmission
      Wire.write(converte_BCD(Segundos));
      Wire.write(converte_BCD(Minutos));
      Wire.write(converte_BCD(Horas));
@@ -185,7 +192,7 @@ void seta_data_hora()
      Wire.write(converte_BCD(Dia_Mes));
      Wire.write(converte_BCD(Mes));
      Wire.write(converte_BCD(Ano));
-     Wire.write(Zero);                        //Start no CI
+     Wire.write(Zero);                        
      Wire.endTransmission(); 
 }
 //~~final seta_data_hora
@@ -196,8 +203,10 @@ void seta_data_hora()
  * In:
  *    Val
  * Out:
- *    Val em BCD
+ *    Val in BCD
  * Description:
+ *    Function that converts input value in BCD
+ *
  *    Funcao que converte o valor de entrada em BCD 
  ************************************************/
 byte converte_BCD(byte Val)
@@ -212,8 +221,10 @@ byte converte_BCD(byte Val)
  * In:
  *    Val
  * Out:
- *    Val em BCD
+ *    Val in BCD
  * Description:
+ *    Function that converts input value in BCD
+ *
  *    Funcao que converte o valor de entrada em BCD 
  ************************************************/
 byte converte_decimal(byte Val)  
@@ -230,6 +241,9 @@ byte converte_decimal(byte Val)
  * Out:
  *    --
  * Description:
+ *    Function that receive RTC values and convert
+ *    it to decimal and print it via serial
+ *
  *    Funcao que recebe valores do RTC, converte
  *    para decimal, e printa os valores na serial
  *
@@ -266,7 +280,9 @@ void mostra_relogio()
  * Out:
  *    --
  * Description:
- *    Primeira página de escrita
+ *    First page write
+ *
+ *    Primeira GLCD página
  *
  ************************************************/
 void draw_intro_bombaja() 
@@ -285,6 +301,8 @@ void draw_intro_bombaja()
  * Out:
  *    --
  * Description:
+ *    Second GLCD page
+ *
  *    Segunda página de escrita
  *
  ************************************************/
@@ -306,6 +324,8 @@ void draw_intro_bombaja_prog()
  * Out:
  *    --
  * Description:
+ *    GLCD write funcion called when SD card is OK
+ *
  *    Funcao de escrita chamada quando o cartao esta
  *    inserido corretamente
  *
@@ -328,8 +348,10 @@ void draw_cartao_inserido()
  * Out:
  *    --
  * Description:
- *    Funcao de escrita chamada quando o cartao esta
- *    inserido corretamente
+ *    GLCD function called when SD card is not OK
+ *
+ *    Funcao de escrita chamada quando o cartao 
+ *    nao esta inserido corretamente
  *
  ************************************************/
 void draw_cartao_nao_inserido() 
@@ -350,6 +372,8 @@ void draw_cartao_nao_inserido()
  * Out:
  *    --
  * Description:
+ *    GLCD function to inform SD card malfunction
+ *
  *    Funcao de escrita chamada quando o cartao esta
  *    apresentando algum problema de leitura
  *
@@ -373,6 +397,9 @@ void draw_cartao_defeito()
  * Out:
  *    --
  * Description:
+ *    Third GLCD page, refresh screen in 400ms 
+ *    intervals, verifying screen_swap button
+ * 
  *    Terceira página de escrita
  *    Atualiza a tela a cada 400ms
  *    Verificando o estado do botao alto/baixo
@@ -424,12 +451,12 @@ void draw_atualiza_tela()
           u8g.print(Segundos_SD);
           if (Gas == 1){
               u8g.setPrintPos(40, 60);
-              u8g.drawStr(0, 60,  "Tanque: Vazio"); 
+              u8g.drawStr(0, 60,  "Tank: Vazio"); 
           }
           
           else{
               u8g.setPrintPos(40, 60);
-              u8g.drawStr(0, 60,  "Tanque: Cheio"); 
+              u8g.drawStr(0, 60,  "Tank: Cheio"); 
          }
          }
  }
@@ -443,26 +470,27 @@ void draw_atualiza_tela()
  * Out:
  *    --
  * Description:
- *    Funcao padrao da IDE do Arduino
+ *    Initialize all things
+ *  
  *    Recebe todas e quaisquer inicializacao de 
  *    protocolos e bibliotecas
  ************************************************/
 void setup() 
 { 
-    attachInterrupt(4, velocidade_cont, FALLING );   // pino 19
-    attachInterrupt(5, rpm_cont, FALLING);          // pino 18
+    attachInterrupt(4, velocidade_cont, FALLING );  //pin 19
+    attachInterrupt(5, rpm_cont, FALLING);          //pin 18
 
     pinMode(19, INPUT_PULLUP);
     pinMode(18, INPUT_PULLUP);
     
-    pinMode(Sinal_Capacitivo, INPUT_PULLUP);        //pino de leitura do sensor capacitivo
-    pinMode(LED_Reabastecimento, OUTPUT);           //pino para saida do led indicando reabastecimento
-    pinMode(Chip_Select_SD, OUTPUT);                //CS do cartao SD
+    pinMode(Sinal_Capacitivo, INPUT_PULLUP);        //Capacitive sensor read pin
+    pinMode(LED_Reabastecimento, OUTPUT);           //Refuel LED
+    pinMode(Chip_Select_SD, OUTPUT);                //SD card CS pin
     
-    pinMode(Botao_Tela, INPUT);                     //Configuracao que define a porta digital 7 como entrada de sinal para a troca de tela
-    digitalWrite(Botao_Tela, LOW);                  //Pulldown para o botao da troca de tela
+    pinMode(Botao_Tela, INPUT);                     //Screen Swap input button
+    digitalWrite(Botao_Tela, LOW);                 
     
-    pinMode(A0, INPUT);                             //Configuracao que define a porta analogica A0 como entrada de sinal pro termopar
+    pinMode(A0, INPUT);                             //Temperature sensor input
     //Serial.begin (9600);
       
     Wire.begin();
@@ -479,8 +507,8 @@ void setup()
         }while( u8g.nextPage());
     delay(1500);  
     
-    /*Funcao para configuracao e set da hora do RTC 
-    Comentar apos utilizada */
+    /*Function that calls RTC Timestamp adjust 
+    Comment it after used */
     
     //seta_data_hora(); 
     
@@ -519,6 +547,8 @@ testa_cartao:
  * Out:
  *    --
  * Description:
+ *    Standard Arduino function. Infinite loop    
+ *
  *    Funcao padrao da IDE do Arduino
  *    Equivalente a while (TRUE)
  ************************************************/ 
@@ -533,9 +563,9 @@ void loop()
      
     //logica da amostra de temperatura - OK!
     Valorlido_Temp = analogRead(A0);
-    Acumulador_Temperatura = Acumulador_Temperatura + ((Valorlido_Temp*850.0)/1024);   //Conversão de 10mV/C para Graus Celsius
-    Contador_Temperatura = Contador_Temperatura + 1;                                   //conta até 10 para fazer a comparacao e efetuar calculo
-                                                                                       //da media, para eliminar assim possiveis outliers
+    Acumulador_Temperatura = Acumulador_Temperatura + ((Valorlido_Temp*850.0)/1024);   //10mV/C to Celsius Degree conversion
+    Contador_Temperatura = Contador_Temperatura + 1;                                   //counts until 10 to compare and do average calculation
+                                                                                       //killing outliers
     if (Contador_Temperatura == 10)                                                     
       {
         Media_Temperatura = (Acumulador_Temperatura / 10);  
@@ -559,15 +589,15 @@ void loop()
           Reserva = 1;
         }
 
-    //Testa a tela selecionada e atualiza o relogio
+    //Test select screen and do Time update
     int Tela_Loop = digitalRead(Botao_Tela);
     mostra_relogio();
    
-    //debounce e verificacao da tela a ser mostrada no GLCD - OK!   
+    //debounce and GLCD screen verification - OK!   
     if ((Tela_Loop == HIGH) && (Current_Millis_Tela - Previous_Millis_Tela >= Interval_Tela))
      {
-         Troca_Tela = !Troca_Tela;                                                      //Seria o estado q esta a memoria para a troca de tela , 0v uma tela , 5v outra tela
-         Previous_Millis_Tela = Current_Millis_Tela;                                    //Esse teste e o seguinte fazem a logica de escrita das paginas na tela
+         Troca_Tela = !Troca_Tela;                                                      //Low state - one screen, High State - another one
+         Previous_Millis_Tela = Current_Millis_Tela;                                   
      }   
      
      if(Current_Millis_Atualiza_Tela - Previous_Millis_Atualiza_Tela >= Interval_Atualiza_Tela)
@@ -579,8 +609,8 @@ void loop()
             }while(u8g.nextPage());
       }
      
-criacao_arquivo_SD:                                                //Verifica a existencia de um cabecalho nos testes. 
-    if (Creation_Archive == 0)                                     //Esse cabecaçho e escrito apenas uma vez.
+criacao_arquivo_SD:                                                //Verify or create a header in SD file. 
+    if (Creation_Archive == 0)                                     //It will be executed only once.
        {
         myFile = SD.open("bombaja.txt", FILE_WRITE);
         if (myFile) 
