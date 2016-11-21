@@ -7,14 +7,14 @@ Baja sensor network developed to Bombaja UFSM
 could apply on real life the knowledge acquired in universities and colleges.**
 The engineering students must project and develop a mini baja prototype that attends the contest requirements, given by SAE.
 
-The competition have different phases, one theroretical, when the students have write a project report and present their car projects to contest judges (graduated engineers) and one practical, when the car is evaluated in different exams, each one aimed to stress one or more specific car parts. 
+**The competition have different phases, one theroretical**, when the students have to write a project report and present their car projects to contest judges (graduated engineers) and **one practical**, when the car is evaluated in different exams, each one aimed to stress one or more specific car parts. 
 
 The last competition test is a **resistance race, where the car that executes more laps in the circuit wins the race.** </br>
 The competition circuit have a lot of obstacles and its objective is to broke car parts. </br>
 **Baja SAE competition is an endurance project and the students vehicles need to be prepared to overdue any obstacle.**
 
-Bombaja UFSM is the team that carries** Federal University of Santa Maria name.** </br> 
-The objective of this project is to develop a sensor network to monitor the prototype in real time.
+Bombaja UFSM is the team that carries **Federal University of Santa Maria name.** </br> 
+The objective of this project is to **develop a sensor network to monitor the prototype in real time.**
 
 ## Development
 The microcotroller used in project is a **XMEGA2560**. 
