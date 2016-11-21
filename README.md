@@ -33,13 +33,13 @@ The main project have the following sensors:
 
 In addition, it has a Real Time Clock (**RTC**), a Standard Drive (**SD**) card to record monitored data and a Graphical Liquid Crystal Display (**GLCD**) screen fixed in the steering wheel to made the information visible to car pilot.
 
-The RTC gives the TimeStamp, available in GLCD screen, as well as other monitored data. </br>
-The SD card receives car real time information every 2 seconds. </br>
-The Fuel Sensor is a capacitive sensor and it monitors the fuel level in prototype's fuel tank. </br>
-The velocity and RPM sensor are inductive sensors that acquire data and send to microcontroller. 
+The **RTC gives the TimeStamp, available in GLCD screen**. </br>
+The **SD card receives car real time information every 2 seconds.** </br>
+The **Fuel Sensor is a capacitive sensor and it monitors the fuel level in prototype's fuel tank.** </br>
+The **velocity and RPM sensors are inductive sensors that detects pulses and send it to the microcontroller.** 
 
-One new idea is to use 2 Radio Frequency (**RF**) modules to **send the monitored data to another microcontroller situated in team pit stop place.** </br>
-The RF module needs to send information in equal time invervals, containing all data stored in SD card. </br>
+One new idea is to use two Radio Frequency (**RF**) modules to **send the monitored data to another microcontroller situated in team pit stop place.** </br>
+The RF module needs to send information in equal time invervals, the same stored information available in SD card. </br>
 Its goal is that the team can visualize acquired car physical measures in real time, facilitating the process of fault detection. 
 
 ## Utilization
