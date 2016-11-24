@@ -1,6 +1,6 @@
 
 # Baja Sensor Network
-Baja sensor network developed to Bombaja UFSM
+**Baja sensor network developed to Bombaja UFSM.**
 
 ## The Purpose
 **Baja SAE is a project developed by Automotive Engineering Society and has as main objective that engineering students
@@ -14,8 +14,8 @@ The competition circuit have a lot of obstacles, like tree trunks and big stones
 **Baja SAE competition is an endurance project and the students vehicles need to be prepared to overdue any obstacle.**
 
 Bombaja UFSM is the team that carries **Federal University of Santa Maria name.** </br> 
-The objective of this project is to **develop a sensor network to monitor the prototype in real time.**
-Use embedded electronical in this kind of vehicle is one of the most hard tasks for electrical engineerings because the enviroment is completely inhospitable, and the system needs to bear impacts, dust, water, mud and clay.
+The objective of this project is to **develop a sensor network to monitor the prototype in real time.** </br>
+**Use embedded electronical in this kind of vehicle is one of the most hard tasks for electrical engineerings because the enviroment is completely inhospitable, and the system needs to bear impacts, dust, water, mud and clay.**
 
 ## Development
 The microcotroller used in project is a **XMEGA2560**. 
@@ -48,7 +48,8 @@ The RF module needs to send information in equal time invervals, the same time w
 Its main goal is grant car physical measures acess to the whole team in real time, facilitating the process of fault detection and problem correction. 
 
 ### RPM + Velocity
-To **improve inductive sensors (RPM + velocity) reliability** it is used **system interruption** to acquire sensor data. In addition, it is calculated an average every 10 times acquisition, to enhance precision. </br>
+To **improve inductive sensors (RPM + velocity) reliability** it is used **system interruption** to acquire sensor data. </br>
+In addition, it is calculated an average every 10 times acquisition, to enhance precision. </br>
 
 ### Fuel
 The **capacitive sensor** is positioned in the **fuel tank half bottom part**, assuring the detection of low fuel. To improve the sensor measure, after it detects the fuel fault, it enables a timer that is reseted if it is detected another signal of fuel presence. This way, **only if the sensor detects fuel fault during 20 consecutive seconds, the GLCD shows "Empty Fuel" warning.** This detection system using a timer avoids fake detections. </br>
@@ -56,7 +57,8 @@ The **capacitive sensor** is positioned in the **fuel tank half bottom part**, a
 ### Temperature
 The **temperatue** is measured using a **Type K Thermocouple**, that is tied in in the gearbox. To read its signal with perfection it is used an **AD595 integrated circuit**, responsible for Cold Junction Compensation and precision improvement. After this singal conditioning, the temperature is sended via analog ports to microcontroller. </br>
 
-To enchance car embedded system it is planned to develop the same software **using a different and better microcontroller**, with a better IDE, like **Texas Instruments MSP430** board or **Freescale FRDM K-22F**, that uses Kinetis Design Studio and a Cortex ARM chip. </br>
+##Future Modifications
+To enchance car embedded system it is being developed the same software **using a different and better hardware architecture**, with a better IDE, like **Texas Instruments MSP430** board and Code Composer Studio or **Freescale FRDM K-22F** with Kinetis Design Studio and a Cortex ARM chip. </br>
 Moreover, the **thermocouple, inductive and capacitive sensors will be swaped by automotive sensors.** </br>
 To improve pilot visibility while driving it will be developed an **analogic automotive panel to show RPM + Velocity**.
 
@@ -67,32 +69,50 @@ The prototype electhroncical system counts too with a **LED headlight pair and a
 This prototype is called BJ-14 and was developed during 2016 by Bombaja UFSM, Federal University of Santa Maria Baja Team. 
 The following pictures were been taken durigin Brazilian South Baja competition, accomplished from 18 to 20 November 2016, in Passo Fundo - RS.
 
-BJ-14 Bombaja Prototype:
+**BJ-14 Bombaja Prototype**:
+
 ![Imgur](http://i.imgur.com/SpP6ThM.jpg)
 
-BJ-14 ECU:
+
+**BJ-14 ECU**:
+
 ![Imgur](http://i.imgur.com/VRJubWr.jpg) 
 
-BJ-14 ECU in Place:
+
+**BJ-14 ECU in Place**:
+
 [Imgur](http://i.imgur.com/uADcoo2.jpg)
 
-BJ-14 ECU (all connected):
+
+**BJ-14 ECU (all connected)**:
+
 ![Imgur](http://i.imgur.com/UUddKUP.jpg)
 
-BJ-14 ECU (closed):
+
+**BJ-14 ECU (closed)**:
+
 ![Imgur](http://i.imgur.com/vRaxChA.jpg)
 
-BJ-14 RPM Sensor:
+
+**BJ-14 RPM Sensor**:
+
 ![Imgur](http://i.imgur.com/7iuwkVN.jpg)
 
-BJ-14 Velocity Sensor:
+
+**BJ-14 Velocity Sensor**:
+
 ![Imgur](http://i.imgur.com/RJu3lg9.jpg)
 
-BJ-14 Fuel Sensor:
+
+**BJ-14 Fuel Sensor**:
+
 ![Imgur](http://i.imgur.com/okjeFrq.jpg)
 
-BJ-14 Rear View (the thermocouple can be seen tied in gearbox):
+
+**BJ-14 Rear View (the thermocouple can be seen tied in gearbox)**:
+
 ![Imgur](http://i.imgur.com/ABqffoz.jpg)
+
 
 ## Copyrights
 Baja SAE is a competition and for a 2 years this was Bombaja UFSM embedded system project. </br>
