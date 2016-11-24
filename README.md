@@ -81,7 +81,7 @@ The following pictures were been taken durigin Brazilian South Baja competition,
 
 **BJ-14 ECU in Place**:
 
-[Imgur](http://i.imgur.com/uADcoo2.jpg)
+![Imgur](http://i.imgur.com/uADcoo2.jpg)
 
 
 **BJ-14 ECU (all connected)**:
