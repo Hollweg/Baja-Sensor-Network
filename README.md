@@ -39,9 +39,9 @@ The **SD card receives car real time information every 2 seconds.** </br>
 The **Fuel Sensor is a capacitive sensor and it monitors the fuel level in prototype's fuel tank.** </br>
 The **velocity and RPM sensors are inductive sensors that detects pulses and send it to the microcontroller.** 
 
-The pilot can view two different screens in GLCD, swaped using a "Swap Screen" button, in the steering wheel. </br>
-In the first screen it is shown Gearbox temperature, Velocity and motor RPM. </br>
-In the second screen it is show the Timestamp and Fuel Tank status.
+**The pilot can view two different screens in GLCD**, swaped using a "Swap Screen" button, in the steering wheel. </br>
+**In the first screen it is shown Gearbox temperature, Velocity and motor RPM.** </br>
+**In the second screen it is show the Timestamp and Fuel Tank status.**
 
 One new idea is to use two Radio Frequency (**RF**) modules to **send the monitored data to another microcontroller situated in team pit stop place.** </br>
 The RF module needs to send information in equal time invervals, the same time when it is stored information in SD card. </br>
@@ -60,8 +60,8 @@ To enchance car embedded system it is planned to develop the same software **usi
 Moreover, the **thermocouple, inductive and capacitive sensors will be swaped by automotive sensors.** </br>
 To improve pilot visibility while driving it will be developed an **analogic automotive panel to show RPM + Velocity**.
 
-The prototype electhroncical system counts too with a LED headlight pair and a horn. </br>
-The whole system is protected by a 1A fuse and powered by a 1000mAh Zippy battery, used mainly in aeromodelling projects. ;)
+The prototype electhroncical system counts too with a **LED headlight pair and a horn.** </br>
+**The whole system is protected by a 1A fuse and powered by a 1000mAh Zippy battery, used mainly in aeromodelling projects.** ;)
 
 ## Copyrights
 The project can **be reproduced with no problem.** </br>
