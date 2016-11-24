@@ -14,7 +14,8 @@ The competition circuit have a lot of obstacles, like tree trunks and big stones
 **Baja SAE competition is an endurance project and the students vehicles need to be prepared to overdue any obstacle.**
 
 Bombaja UFSM is the team that carries **Federal University of Santa Maria name.** </br> 
-The objective of this project is to **develop a sensor network to monitor the prototype in real time.** </br>
+The objective of this project is to **develop a sensor network to monitor the prototype in real time.** 
+
 **Use embedded electronical in this kind of vehicle is one of the most hard tasks for electrical engineerings because the enviroment is completely inhospitable, and the system needs to bear impacts, dust, water, mud and clay.**
 
 ## Development
@@ -58,7 +59,8 @@ The **capacitive sensor** is positioned in the **fuel tank half bottom part**, a
 The **temperatue** is measured using a **Type K Thermocouple**, that is tied in in the gearbox. To read its signal with perfection it is used an **AD595 integrated circuit**, responsible for Cold Junction Compensation and precision improvement. After this singal conditioning, the temperature is sended via analog ports to microcontroller. </br>
 
 ##Future Modifications
-To enchance car embedded system it is being developed the same software **using a different and better hardware architecture**, with a better IDE, like **Texas Instruments MSP430** board and Code Composer Studio or **Freescale FRDM K-22F** with Kinetis Design Studio and a Cortex ARM chip. </br>
+To enchance car embedded system it is being developed the same software **using a different and better hardware architecture**, with a better IDE, like **Texas Instruments MSP430** board and Code Composer Studio or **Freescale FRDM K-22F** with Kinetis Design Studio and a Cortex ARM chip.
+
 Moreover, the **thermocouple, inductive and capacitive sensors will be swaped by automotive sensors.** </br>
 To improve pilot visibility while driving it will be developed an **analogic automotive panel to show RPM + Velocity**.
 
@@ -66,8 +68,8 @@ The prototype electhroncical system counts too with a **LED headlight pair and a
 **The whole system is protected by a 1A fuse and powered by a 1000mAh Zippy battery, used mainly in aeromodelling projects.** ;)
 
 ## Prototype Images
-This prototype is called BJ-14 and was developed during 2016 by Bombaja UFSM, Federal University of Santa Maria Baja Team. 
-The following pictures were been taken durigin Brazilian South Baja competition, accomplished from 18 to 20 November 2016, in Passo Fundo - RS.
+**This prototype is called BJ-14** and was developed during **2016 by Bombaja UFSM**, Federal University of Santa Maria Baja Team. 
+**The following pictures were been taken durigin Brazilian South Baja competition, accomplished from 18 to 20 November 2016, in Passo Fundo - RS**.
 
 **BJ-14 Bombaja Prototype**:
 
